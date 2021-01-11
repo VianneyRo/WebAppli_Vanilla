@@ -1,50 +1,79 @@
 const canvas = document.getElementById('canvasTest');
 const ctx = canvas.getContext('2d');
 
-let x = 10;
-let y = 10;
+canvas.width = document.documentElement.clientWidth || document.body.clientWidth;
+canvas.height = document.documentElement.clientHeight || document.body.clientHeight;
 
-let canMoveXRight = true;
-let canMoveXLeft = false;
+function createSquares(x, y, w, h, color, dx, dy, draw){
+    let obj = {
+        x : 50,
+        y : 10,
+        w : 150,
+        h : 100,
+        color : 'red',
+        dx : 2,
+        dy : 2,
+        draw : rect_draw
+    }
+    return obj;
+}
 
-let canMoveYDown = true;
-let canMoveYUp = false;
+let rect = createSquares(10, 20, 30, 50, 'red', 3, 3);
+let rect2 = createSquares(100, 20, 30, 50, 'yellow', 2, 3);
+
+let x = 0;
+let y = 0;
+
+let moveX = 2;
+let moveY = 2;
+
+const CUBE_SIZE_X = 100;
+const CUBE_SIZE_Y = 100;
+
+var listSquarres = [];
+
+//var img = new Image();
+//img.src = 'img/...'
 
 function gameLoop(){
     ctx.fillStyle = 'green';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = 'red';
-    ctx.fillRect(x, y, 100, 100);
+    ctx.fillStyle = this.color;
+    ctx.fillRect(this.x, this.y, this.w, this.h);
 
-    if(x >= canvas.width - 100 && y >= canvas.height - 100){
-        canMoveXRight = false;
-        canMoveYDown = false;
-        console.log("bas droite");
+    /*ctx.fillStyle = 'red';
+    ctx.fillRect(x, y, CUBE_SIZE_X, CUBE_SIZE_Y);*/
+
+    if(x + CUBE_SIZE_X + moveX > canvas.width || x + moveX <= 0){
+        moveX *= -1;
     }
 
-    moveSquare();
-    
-
+    if(y + CUBE_SIZE_Y + moveY > canvas.height || x + moveY <= 0){
+        moveY *= -1;
+    }
+    x += moveX;
+    y += moveY;
 }
 
-function moveSquare(){
+function rect_draw(){
+    ctx.fillStyle = this.color;
+    ctx.fillRect(this.x, this.y, this.w, this.h);
 
-    if(canMoveXRight){
-        x += 1;
+    if(this.x + this.w > canvas.width){
+        this.dx = -this.dx;
     }
 
-    if(canMoveXLeft){
-        x -= 1;
+    if(this.x < 0){
+        this.dx = Math.abs(this.dx)
     }
 
-    if(canMoveYDown){
-        y += 1;
+    if(this.y + this.h > canvas.height){
+        this.dy = Math.abs(this.dy)
     }
 
-    if(canMoveYUp){
-        y -= 1;
-    }
+    this.x += this.dx;
+    this.y += this.dy;
 }
 
 setInterval(gameLoop, 1000 / 60);
