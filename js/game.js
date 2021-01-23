@@ -7,8 +7,17 @@ canvas.height = document.documentElement.clientHeight || document.body.clientHei
 
 document.addEventListener("DOMCContentLoaded", startUp);
 
-body.addEventListener('click', () => {
-    console.log("Click !");
+// Détection d'un click dans le canvas
+canvas.addEventListener('click', (ev) => {
+    console.log("Click : " + ev);
+
+    const x = ev.clientX;
+    const y = ev.clientY;
+    // Rayon aléatoire
+    const r = Math.random() * 100 + 50;
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    // Ajoute un nouveau cerlcle au tableau gameobjects
+    gameObjects.push(cercle_create(x, y, r, color, 3, 8, Math.random() >= 0.5));
 })
 
 function rect_create(x, y, w, h, color, dx, dy) {
@@ -73,7 +82,7 @@ function startUp() {
 const gameObjects = [];
 let frame = 0;
 
-function generateCircle() {
+/*function generateCircle() {
     for (let i = 0; i < 50; i++) {
         // Place des cercles à des endroits aléatoires
         const x = Math.random() * canvas.width;
@@ -84,7 +93,7 @@ function generateCircle() {
         // Ajoute un nouveau cerlcle au tableau gameobjects
         gameObjects.push(cercle_create(x, y, r, color, 3, 8, Math.random() >= 0.5));
     }
-}
+}*/
 
 function gameLoop() {
     ctx.fillStyle = 'black';
