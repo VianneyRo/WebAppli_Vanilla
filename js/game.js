@@ -93,10 +93,12 @@ function gameLoop() {
     for (const obj of gameObjects) {
 
         if (obj.x + obj.rayon + obj.moveX > canvas.width || obj.x + obj.moveX - obj.rayon <= 0) {
+            obj.color = colors[Math.floor(Math.random() * colors.length)];
             obj.moveX *= -1;
         }
 
         if (obj.y + obj.rayon + obj.moveY > canvas.height || obj.y + obj.moveY - obj.rayon <= 0) {
+            obj.color = colors[Math.floor(Math.random() * colors.length)];
             obj.moveY *= -1;
         }
         obj.x += obj.moveX;
