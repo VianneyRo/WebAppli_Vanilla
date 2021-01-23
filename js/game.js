@@ -1,10 +1,15 @@
 const canvas = document.getElementById('canvasTest');
+const body = document.querySelector('body');
 const ctx = canvas.getContext('2d');
 
 canvas.width = document.documentElement.clientWidth || document.body.clientWidth;
 canvas.height = document.documentElement.clientHeight || document.body.clientHeight;
 
 document.addEventListener("DOMCContentLoaded", startUp);
+
+body.addEventListener('click', () => {
+    console.log("Click !");
+})
 
 function rect_create(x, y, w, h, color, dx, dy) {
     let objRect = {
@@ -25,6 +30,8 @@ function cercle_create(x, y, rayon, color, angleStart, angleEnd, sensAntiHoraire
     let objCercle = {
         x: x,
         y: y,
+        moveX: 2,
+        moveY: 2,
         rayon: rayon,
         color: color,
         angleStart: angleStart,
@@ -43,14 +50,14 @@ const colors = ['#264653', '#2a9d8f', '#e9c46a', '#f4a261', '#e76f51'];
 let x = 0;
 let y = 0;
 
-let moveX = 2;
-let moveY = 2;
-
 const CUBE_SIZE_X = 100;
 const CUBE_SIZE_Y = 100;
 
 var listSquarres = [];
 var ongoingTouches = [];
+
+let colorCircleBorder = 'white';
+let borderThickness = 8;
 
 var img = new Image();
 img.src = 'pictures/SpongeBob.png'
@@ -80,20 +87,20 @@ function generateCircle() {
 }
 
 function gameLoop() {
-    ctx.fillStyle = 'grey';
+    ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     for (const obj of gameObjects) {
 
-        if (obj.x + obj.rayon + moveX > canvas.width || obj.x  + moveX <= 0) {
-            moveX *= -1;
+        if (obj.x + obj.rayon + obj.moveX > canvas.width || obj.x + obj.moveX - obj.rayon <= 0) {
+            obj.moveX *= -1;
         }
 
-        if (obj.y + obj.rayon + moveY > canvas.height || obj.y + moveY <= 0) {
-            moveY *= -1;
+        if (obj.y + obj.rayon + obj.moveY > canvas.height || obj.y + obj.moveY - obj.rayon <= 0) {
+            obj.moveY *= -1;
         }
-        obj.x += moveX;
-        obj.y += moveY;
+        obj.x += obj.moveX;
+        obj.y += obj.moveY;
         circle_print(obj);
     }
     frame++;
@@ -123,6 +130,10 @@ function rect_draw() {
 function circle_print(obj) {
     ctx.beginPath();
     ctx.fillStyle = obj.color;
+    // Color of circle border
+    ctx.strokeStyle = colorCircleBorder;
+    // Border's thickness
+    ctx.lineWidth = borderThickness;
     ctx.arc(obj.x, obj.y, obj.rayon, 0, Math.PI * 2, obj.sensAntiHoraire); // obj.offset + frame / 30, 2 * Math.PI + frame / 30
     ctx.fill();
     ctx.stroke();
@@ -136,8 +147,10 @@ function handleStart(ev) {
     for (var i = 0; i < touches.length; i++) {
         console.log("Touche " + i);
         // Place des cercles à des endroits aléatoires
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
+        // const x = Math.random() * canvas.width;
+        // const y = Math.random() * canvas.height;
+        const x = ev.touches[i].clientX;
+        const y = ev.touches[i].clientY;
         // Rayon aléatoire
         const r = Math.random() * 100 + 50;
         const color = colors[Math.floor(Math.random() * colors.length)];
